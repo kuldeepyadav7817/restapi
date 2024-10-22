@@ -1,31 +1,34 @@
 const express = require("express");
 const app = express();
-const users = require("./MOCK_DATA.json");
+const session = require("express-session");
 const port = 3000;
 
-app.get("/api/users", (req, res) => {
-  res.send(users);
+// Middleware for JSON and URL-encoded data
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// Session middleware
+app.use(
+  session({
+    secret: "kuldeepyadav",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+
+// Route handler
+app.get("/", (req, res) => {
+  if (req.session.views) {
+    req.session.views++;
+    res.send(`<h1>You've visited ${req.session.views} times</h1>`);
+  } else {
+    req.session.views = 1;
+    res.send("Welcome! You are visiting for the first time.");
+  }
 });
 
-app.get("/users", (req, res) => {
-  res.send(
-    users
-      .map((user) => {
-        return `
-            <ul>
-              <li>ID: ${user.id}</li>
-              <li>Email: ${user.email}</li>
-              <li>First Name: ${user.first_name}</li>
-              <li>Last Name: ${user.last_name}</li>
-              <li>Gender: ${user.gender}</li>
-            </ul>
-            <hr />
-          `;
-      })
-      .join("")
-  );
-});
-
+// Start the server
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
