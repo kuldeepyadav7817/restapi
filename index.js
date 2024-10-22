@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 // Session middleware
 app.use(
   session({
-    secret: "kuldeepyadav",
+    secret: "kuldeep yadav",
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
