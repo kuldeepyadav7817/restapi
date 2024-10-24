@@ -1,34 +1,26 @@
-const express = require("express");
-const app = express();
-const session = require("express-session");
-const port = 3000;
+var express = require('express')
+var app = express()
+const PORT=3000;
 
-// Middleware for JSON and URL-encoded data
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
-// Session middleware
-app.use(
-  session({
-    secret: "kuldeep yadav",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-  })
-);
+const bcrypt=require('bcrypt')
+var cookieParser = require('cookie-parser')
 
-// Route handler
-app.get("/", (req, res) => {
-  if (req.session.views) {
-    req.session.views++;
-    res.send(`<h1>You've visited ${req.session.views} times</h1>`);
-  } else {
-    req.session.views = 1;
-    res.send("Welcome! You are visiting for the first time.");
-  }
+
+
+app.use(cookieParser())
+
+app.get("/",(req,res)=>{
+  bcrypt.genSalt(10, function(err, salt) {
+    bcrypt.hash("kuldeep", salt, function(err, hash) {
+      res.cookie("cookie",hash)
+      res.send(hash)
+      
+       });
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+
+
+})
+
+app.listen(PORT)
